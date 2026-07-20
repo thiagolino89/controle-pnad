@@ -1,6 +1,6 @@
-import { Grid, MenuItem, TextField } from "@mui/material";
-
 import { useEffect, useState } from "react";
+
+import { Grid, MenuItem, TextField } from "@mui/material";
 
 import type { Upa } from "../types/upa";
 
@@ -31,6 +31,11 @@ export default function UpaForm({
       setNome(initialData.nome);
       setMunicipioId(initialData.municipioId);
       setSituacao(initialData.situacao);
+    } else {
+      setCodigo("");
+      setNome("");
+      setMunicipioId("");
+      setSituacao("Ativa");
     }
   }, [initialData]);
 

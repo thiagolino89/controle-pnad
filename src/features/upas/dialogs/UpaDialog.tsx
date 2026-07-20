@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Button,
@@ -29,6 +29,14 @@ interface Props {
   ) => void | Promise<void>;
 }
 
+const dadosIniciais: Omit<Upa, "id"> = {
+  codigo: "",
+  nome: "",
+  municipioId: "",
+  municipioNome: "",
+  situacao: "Ativa",
+};
+
 export default function UpaDialog({
   open,
   upa,
@@ -36,14 +44,23 @@ export default function UpaDialog({
   onClose,
   onSave,
 }: Props) {
-  const [dados, setDados] =
-    useState<Omit<Upa, "id">>({
-      codigo: "",
-      nome: "",
-      municipioId: "",
-      municipioNome: "",
-      situacao: "Ativa",
-    });
+  const [dados, setDados] = useState(dadosIniciais);
+
+  useEffect(() => {
+    if (!open) return;
+
+    if (upa) {
+      setDados({
+        codigo: upa.codigo,
+        nome: upa.nome,
+        municipioId: upa.municipioId,
+        municipioNome: upa.municipioNome,
+        situacao: upa.situacao,
+      });
+    } else {
+      setDados(dadosIniciais);
+    }
+  }, [open, upa]);
 
   async function salvar() {
     await onSave(dados);
@@ -57,9 +74,7 @@ export default function UpaDialog({
       maxWidth="md"
     >
       <DialogTitle>
-        {upa
-          ? "Editar UPA"
-          : "Nova UPA"}
+        {upa ? "Editar UPA" : "Nova UPA"}
       </DialogTitle>
 
       <DialogContent sx={{ pt: 2 }}>

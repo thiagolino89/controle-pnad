@@ -31,6 +31,8 @@ export default function UpasPage() {
 
   const { municipios } = useMunicipios();
 
+  console.log("Municípios carregados:", municipios);
+
   const [pesquisa, setPesquisa] = useState("");
 
   const [pagina, setPagina] = useState(0);
@@ -48,15 +50,6 @@ export default function UpasPage() {
 
   const [upaExcluir, setUpaExcluir] =
     useState<Upa | null>(null);
-
-  const [dadosFormulario, setDadosFormulario] =
-    useState<Omit<Upa, "id">>({
-      codigo: "",
-      nome: "",
-      municipioId: "",
-      municipioNome: "",
-      situacao: "Ativa",
-    });
 
   const upasFiltradas = useMemo(() => {
     const texto = pesquisa.toLowerCase().trim();
@@ -105,14 +98,16 @@ export default function UpasPage() {
     setConfirmOpen(true);
   }
 
-  async function salvar() {
+  async function salvar(
+    dados: Omit<Upa, "id">
+  ) {
     if (upaSelecionada) {
       await editar(
         upaSelecionada.id,
-        dadosFormulario
+        dados
       );
     } else {
-      await criar(dadosFormulario);
+      await criar(dados);
     }
 
     fecharDialog();
@@ -187,10 +182,7 @@ export default function UpasPage() {
           nome: m.nome,
         }))}
         onClose={fecharDialog}
-        onSave={(dados) => {
-          setDadosFormulario(dados);
-          return salvar();
-        }}
+        onSave={salvar}
       />
 
       <CrudConfirmDialog
