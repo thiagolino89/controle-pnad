@@ -1,11 +1,14 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import PageContainer from "../../components/layout/PageContainer";
 import CrudLoading from "../../components/crud/CrudLoading";
 import CrudEmptyState from "../../components/crud/CrudEmptyState";
 import CrudConfirmDialog from "../../components/crud/CrudConfirmDialog";
 
-import { DataTableToolbar } from "../../components/tables";
+import {
+  DataTableToolbar,
+  DataTablePagination,
+} from "../../components/tables";
 
 import MunicipioTable from "./components/MunicipioTable";
 import MunicipioDialog from "./dialogs/MunicipioDialog";
@@ -26,14 +29,25 @@ export default function MunicipiosPage() {
 
   const [pesquisa, setPesquisa] = useState("");
 
+  const [pagina, setPagina] = useState(0);
+
+  const [linhasPorPagina, setLinhasPorPagina] =
+    useState(10);
+
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const [municipioSelecionado, setMunicipioSelecionado] =
-    useState<Municipio | undefined>();
+  const [confirmOpen, setConfirmOpen] =
+    useState(false);
 
-  const [municipioParaExcluir, setMunicipioParaExcluir] =
-    useState<Municipio | null>(null);
+  const [
+    municipioSelecionado,
+    setMunicipioSelecionado,
+  ] = useState<Municipio>();
+
+  const [
+    municipioParaExcluir,
+    setMunicipioParaExcluir,
+  ] = useState<Municipio | null>(null);
 
   const municipiosFiltrados = useMemo(() => {
     const texto = pesquisa.trim().toLowerCase();
@@ -44,24 +58,51 @@ export default function MunicipiosPage() {
 
     return municipios.filter((municipio) => {
       return (
-        municipio.codigo.toLowerCase().includes(texto) ||
-        municipio.nome.toLowerCase().includes(texto) ||
-        municipio.uf.toLowerCase().includes(texto)
+        municipio.codigo
+          .toLowerCase()
+          .includes(texto) ||
+        municipio.nome
+          .toLowerCase()
+          .includes(texto) ||
+        municipio.uf
+          .toLowerCase()
+          .includes(texto)
       );
     });
   }, [municipios, pesquisa]);
+
+  useEffect(() => {
+    setPagina(0);
+  }, [pesquisa]);
+
+  const municipiosPaginados = useMemo(() => {
+    const inicio = pagina * linhasPorPagina;
+
+    return municipiosFiltrados.slice(
+      inicio,
+      inicio + linhasPorPagina
+    );
+  }, [
+    municipiosFiltrados,
+    pagina,
+    linhasPorPagina,
+  ]);
 
   function novoMunicipio() {
     setMunicipioSelecionado(undefined);
     setDialogOpen(true);
   }
 
-  function editarMunicipio(municipio: Municipio) {
+  function editarMunicipio(
+    municipio: Municipio
+  ) {
     setMunicipioSelecionado(municipio);
     setDialogOpen(true);
   }
 
-  function excluirMunicipio(municipio: Municipio) {
+  function excluirMunicipio(
+    municipio: Municipio
+  ) {
     setMunicipioParaExcluir(municipio);
     setConfirmOpen(true);
   }
@@ -122,11 +163,35 @@ export default function MunicipiosPage() {
             message="Nenhum município encontrado."
           />
         ) : (
-          <MunicipioTable
-            municipios={municipiosFiltrados}
-            onEdit={editarMunicipio}
-            onDelete={excluirMunicipio}
-          />
+          <>
+            <MunicipioTable
+              municipios={municipiosPaginados}
+              onEdit={editarMunicipio}
+              onDelete={excluirMunicipio}
+            />
+
+            <DataTablePagination
+              total={municipiosFiltrados.length}
+              pagina={pagina}
+              linhasPorPagina={
+                linhasPorPagina
+              }
+              onPaginaChange={(
+                _,
+                novaPagina
+              ) =>
+                setPagina(novaPagina)
+              }
+              onLinhasPorPaginaChange={(
+                event
+              ) => {
+                setLinhasPorPagina(
+                  Number(event.target.value)
+                );
+                setPagina(0);
+              }}
+            />
+          </>
         )}
       </PageContainer>
 

@@ -37,6 +37,10 @@ export default function DataTablePagination({
           count !== -1 ? count : `mais de ${to}`
         }`
       }
+      sx={{
+        borderTop: 1,
+        borderColor: "divider",
+      }}
     />
   );
 }

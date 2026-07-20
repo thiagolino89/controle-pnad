@@ -16,21 +16,64 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import SettingsIcon from "@mui/icons-material/Settings";
 
+import {
+  Link,
+  useLocation,
+} from "react-router-dom";
+
 const drawerWidth = 250;
 
 const menu = [
-  { text: "Dashboard", icon: <DashboardIcon /> },
-  { text: "Municípios", icon: <LocationCityIcon /> },
-  { text: "UPAs", icon: <MapIcon /> },
-  { text: "Setores", icon: <GridViewIcon /> },
-  { text: "Domicílios", icon: <HomeIcon /> },
-  { text: "Agenda", icon: <EventIcon /> },
-  { text: "Importação", icon: <UploadFileIcon /> },
-  { text: "Relatórios", icon: <AssessmentIcon /> },
-  { text: "Configurações", icon: <SettingsIcon /> },
+  {
+    text: "Dashboard",
+    icon: <DashboardIcon />,
+    path: "/",
+  },
+  {
+    text: "Municípios",
+    icon: <LocationCityIcon />,
+    path: "/municipios",
+  },
+  {
+    text: "UPAs",
+    icon: <MapIcon />,
+    path: "/upas",
+  },
+  {
+    text: "Setores",
+    icon: <GridViewIcon />,
+    path: "/setores",
+  },
+  {
+    text: "Domicílios",
+    icon: <HomeIcon />,
+    path: "/domicilios",
+  },
+  {
+    text: "Agenda",
+    icon: <EventIcon />,
+    path: "/agenda",
+  },
+  {
+    text: "Importação",
+    icon: <UploadFileIcon />,
+    path: "/importacao",
+  },
+  {
+    text: "Relatórios",
+    icon: <AssessmentIcon />,
+    path: "/relatorios",
+  },
+  {
+    text: "Configurações",
+    icon: <SettingsIcon />,
+    path: "/configuracoes",
+  },
 ];
 
 export default function Sidebar() {
+  const location = useLocation();
+
   return (
     <Drawer
       variant="permanent"
@@ -45,12 +88,16 @@ export default function Sidebar() {
       }}
     >
       <List>
-        {menu.map((item, index) => (
+        {menu.map((item) => (
           <ListItemButton
             key={item.text}
-            selected={index === 0}
+            component={Link}
+            to={item.path}
+            selected={location.pathname === item.path}
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemIcon>
+              {item.icon}
+            </ListItemIcon>
 
             <ListItemText primary={item.text} />
           </ListItemButton>

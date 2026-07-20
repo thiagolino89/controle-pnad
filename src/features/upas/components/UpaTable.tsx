@@ -15,18 +15,18 @@ import {
 
 import useSort from "../../../components/hooks/useSort";
 
-import type { Municipio } from "../types/municipio";
+import type { Upa } from "../types/upa";
 
 interface Props {
-  municipios: Municipio[];
+  upas: Upa[];
 
-  onEdit: (municipio: Municipio) => void;
+  onEdit: (upa: Upa) => void;
 
-  onDelete: (municipio: Municipio) => void;
+  onDelete: (upa: Upa) => void;
 }
 
-export default function MunicipioTable({
-  municipios,
+export default function UpaTable({
+  upas,
   onEdit,
   onDelete,
 }: Props) {
@@ -35,11 +35,11 @@ export default function MunicipioTable({
     order,
     orderBy,
     handleSort,
-  } = useSort(municipios, "nome");
+  } = useSort(upas, "nome");
 
-  if (municipios.length === 0) {
+  if (upas.length === 0) {
     return (
-      <DataTableEmpty mensagem="Nenhum município cadastrado." />
+      <DataTableEmpty mensagem="Nenhuma UPA cadastrada." />
     );
   }
 
@@ -63,27 +63,19 @@ export default function MunicipioTable({
               direction={order}
               onClick={() => handleSort("nome")}
             >
+              UPA
+            </TableSortLabel>
+          </TableCell>
+
+          <TableCell>
+            <TableSortLabel
+              active={orderBy === "municipioNome"}
+              direction={order}
+              onClick={() =>
+                handleSort("municipioNome")
+              }
+            >
               Município
-            </TableSortLabel>
-          </TableCell>
-
-          <TableCell width={90}>
-            <TableSortLabel
-              active={orderBy === "uf"}
-              direction={order}
-              onClick={() => handleSort("uf")}
-            >
-              UF
-            </TableSortLabel>
-          </TableCell>
-
-          <TableCell align="center" width={90}>
-            <TableSortLabel
-              active={orderBy === "upas"}
-              direction={order}
-              onClick={() => handleSort("upas")}
-            >
-              UPAs
             </TableSortLabel>
           </TableCell>
 
@@ -91,41 +83,46 @@ export default function MunicipioTable({
             <TableSortLabel
               active={orderBy === "situacao"}
               direction={order}
-              onClick={() => handleSort("situacao")}
+              onClick={() =>
+                handleSort("situacao")
+              }
             >
               Situação
             </TableSortLabel>
           </TableCell>
 
-          <TableCell align="center" width={120}>
+          <TableCell
+            align="center"
+            width={120}
+          >
             Ações
           </TableCell>
         </TableRow>
       </TableHead>
 
       <TableBody>
-        {sortedData.map((municipio) => (
-          <TableRow hover key={municipio.id}>
-            <TableCell>{municipio.codigo}</TableCell>
+        {sortedData.map((upa) => (
+          <TableRow hover key={upa.id}>
+            <TableCell>{upa.codigo}</TableCell>
 
             <TableCell>
               <Typography fontWeight={500}>
-                {municipio.nome}
+                {upa.nome}
               </Typography>
             </TableCell>
 
-            <TableCell>{municipio.uf}</TableCell>
-
-            <TableCell align="center">
-              {municipio.upas}
+            <TableCell>
+              {upa.municipioNome}
             </TableCell>
 
-            <TableCell>{municipio.situacao}</TableCell>
+            <TableCell>
+              {upa.situacao}
+            </TableCell>
 
             <TableCell align="center">
               <CrudActions
-                onEdit={() => onEdit(municipio)}
-                onDelete={() => onDelete(municipio)}
+                onEdit={() => onEdit(upa)}
+                onDelete={() => onDelete(upa)}
               />
             </TableCell>
           </TableRow>
